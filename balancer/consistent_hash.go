@@ -75,6 +75,7 @@ func (p *consistentHashPicker) Pick(ctx context.Context, opts balancer.PickOptio
 	if ok {
 		targetAddr, ok := p.hash.Get(key)
 		if ok {
+			grpclog.Infof("consistentHashPicker %s key=%s target=%s\n", opts.FullMethodName, key, targetAddr)
 			sc = p.subConns[targetAddr]
 		}
 	}
