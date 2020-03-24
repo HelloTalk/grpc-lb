@@ -3,12 +3,13 @@ package balancer
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"sync"
+
 	"google.golang.org/grpc/balancer"
 	"google.golang.org/grpc/balancer/base"
 	"google.golang.org/grpc/grpclog"
 	"google.golang.org/grpc/resolver"
-	"strconv"
-	"sync"
 )
 
 const ConsistentHash = "consistent_hash"
@@ -68,7 +69,7 @@ type consistentHashPicker struct {
 	mu                sync.Mutex
 }
 
-func (p *consistentHashPicker) Pick(ctx context.Context, opts balancer.PickOptions) (balancer.SubConn, func(balancer.DoneInfo), error) {
+func (p *consistentHashPicker) Pick(ctx context.Context, opts balancer.PickInfo) (balancer.SubConn, func(balancer.DoneInfo), error) {
 	var sc balancer.SubConn
 	p.mu.Lock()
 	key, ok := ctx.Value(p.consistentHashKey).(string)
